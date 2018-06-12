@@ -1,14 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/**
- * Atividade MAPA realizada para matéria Estrutura de Dados I (Unicesumar).
- * Autor: Odilon Jonathan Kröger
- * RA: 1715070-5
- * Professor: Marcelo Lessa
- * Módulo: 52-2018
- */
-
 #define DESLIGAR 0
 #define PEGAR_SENHA 1
 #define CHAMAR_SENHA 2
@@ -22,7 +14,6 @@ typedef struct
 typedef no *ptrNo;
 ptrNo fila;
 int acao = 99;
-int listaVazia = 1;
 int senha = 0;
 
 void inserirNovaSenha(ptrNo fila)
@@ -38,6 +29,34 @@ void inserirNovaSenha(ptrNo fila)
     fila->proximo = NULL;
 };
 
+void chamarSenha(ptrNo fila)
+{
+    ptrNo atual;
+    atual = (ptrNo) malloc(sizeof(no));
+    atual = fila;
+    if(fila->proximo != NULL)
+    {
+        fila = fila->proximo;
+        atual->proximo = fila->proximo;
+        printf("Chamando senha: %d\n", fila->dado);
+    }
+    else
+    {
+        printf("Fila vazia.\n");
+    }
+};
+
+void exibirFila(ptrNo fila)
+{
+    printf("Fila: ");
+    while(fila->proximo != NULL)
+    {
+        fila = fila->proximo;
+        printf("%d ", fila->dado);
+    };
+    printf("\n\n");
+};
+
 //  Função que exibe o menu e obtém a ação escolhida pelo usuário.
 void obterAcao()
 {
@@ -47,27 +66,17 @@ void obterAcao()
     printf("|| (2) Chamar senha.  ||\n");
     printf("|| (0) Desligar.      ||\n");
     printf("||--------------------||\n\n");
-    printf("||  Chamando senha!   ||\n");
-    // if(senha > 1)
-    // {
-    //     printf("|| Última atendida: %d ||\n", senha);
-    // }
-    // printf("|| Em atendimento: %d ||\n", senha);
-    // printf("|| Senha seguinte: %d ||\n", senha);
-
-  
-  
-    printf("\nEscolha sua ação: ");
-    scanf("%d", &acao);  
+    exibirFila(fila);
+    scanf("%d", &acao);
 };
 
 void tratarAcao()
 {
-    
+    printf("\e[2J\e[H");
     switch (acao)
     {
         case DESLIGAR:
-            if(listaVazia == 1)
+            if(fila->proximo == NULL)
             {
                 printf("\nFinalizando o sistema...\n");
             }
@@ -75,14 +84,16 @@ void tratarAcao()
             {
                 printf("\nOps! Não foi possível finalizar o sistema.");
                 printf("\nÉ necessário chamar todas as senhas.\n");
+                acao++;
             }
+            break;
 
         case PEGAR_SENHA:
             inserirNovaSenha(fila);
             break;
     
         case CHAMAR_SENHA:
-            printf("\nVocê chamou a próxima senha da fila.");
+            chamarSenha(fila);
             break;
 
         default:
